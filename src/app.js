@@ -1,15 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const path = require('path');
 const errorHandler = require('./middleware/errorHandler');
 
 const telemetryRoutes = require('./routes/telemetryRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const telemetryController = require('./controllers/telemetryController');
 
 const app = express();
 
 // Security HTTP headers
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Allow external fonts and scripts on uninstall page
+  })
+);
 
 // CORS Configuration (Allow Browser Extensions & Dashboard domains)
 const allowedOrigins = process.env.ALLOWED_ORIGINS
@@ -35,6 +41,9 @@ app.use(
   })
 );
 
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Body Parsing Middleware
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
@@ -48,6 +57,9 @@ app.get('/health', (req, res) => {
     service: 'Browser Extension Tracker API',
   });
 });
+
+// Top-level uninstall page alias
+app.get('/uninstall', telemetryController.renderUninstallPage);
 
 // API Routes
 app.use('/api/v1/telemetry', telemetryRoutes);

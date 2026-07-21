@@ -1,3 +1,4 @@
+const path = require('path');
 const Installation = require('../models/Installation');
 const Ping = require('../models/Ping');
 const Event = require('../models/Event');
@@ -125,33 +126,55 @@ exports.trackPing = async (req, res, next) => {
 };
 
 /**
+ * @route   GET /api/v1/telemetry/uninstall
+ * @desc    Render uninstall HTML page & record uninstall status
+ */
+exports.renderUninstallPage = async (req, res, next) => {
+  try {
+    const { installationId, extensionId } = req.query;
+
+    if (installationId && extensionId) {
+      await Installation.updateOne(
+        { extensionId, installationId },
+        {
+          $set: {
+            status: 'uninstalled',
+            uninstalledAt: new Date(),
+          },
+        }
+      ).catch((err) => console.warn('Uninstall DB status update error:', err));
+    }
+
+    const htmlPath = path.join(__dirname, '../../public/uninstall.html');
+    return res.sendFile(htmlPath);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * @route   POST /api/v1/telemetry/uninstall
- * @desc    Track extension uninstallation
+ * @desc    Track extension uninstallation feedback
  */
 exports.trackUninstall = async (req, res, next) => {
   try {
     const { installationId, extensionId, uninstallReason = '', metadata = {} } = req.body;
 
-    if (!installationId || !extensionId) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required fields: installationId and extensionId',
-      });
-    }
-
-    const now = new Date();
-
-    const installation = await Installation.findOneAndUpdate(
-      { extensionId, installationId },
-      {
-        $set: {
-          status: 'uninstalled',
-          uninstalledAt: now,
-          uninstallReason,
+    if (installationId && extensionId) {
+      const now = new Date();
+      await Installation.findOneAndUpdate(
+        { extensionId, installationId },
+        {
+          $set: {
+            status: 'uninstalled',
+            uninstalledAt: now,
+            uninstallReason,
+            metadata,
+          },
         },
-      },
-      { new: true }
-    );
+        { new: true }
+      );
+    }
 
     return res.status(200).json({
       success: true,

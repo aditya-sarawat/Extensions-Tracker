@@ -4,8 +4,13 @@ const telemetryController = require('../controllers/telemetryController');
 const { verifyExtensionKey } = require('../middleware/auth');
 const { telemetryLimiter } = require('../middleware/rateLimiter');
 
-// Apply rate limiter & API key check to telemetry routes
+// Apply rate limiter
 router.use(telemetryLimiter);
+
+// Public browser uninstall page endpoint (accessible without extension API key header)
+router.get('/uninstall', telemetryController.renderUninstallPage);
+
+// Apply API key check to API telemetry routes
 router.use(verifyExtensionKey);
 
 // Lifecycle Endpoints
