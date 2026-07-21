@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Extension Uninstalled</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg: #09090e;
@@ -35,7 +38,7 @@
       justify-content: center;
       align-items: center;
       padding: 24px;
-      background-image: 
+      background-image:
         radial-gradient(circle at 50% 20%, var(--accent-glow) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 40%);
     }
@@ -59,6 +62,7 @@
         opacity: 0;
         transform: translateY(20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -138,19 +142,22 @@
     }
   </style>
 </head>
+
 <body>
   <div class="card">
     <div class="icon-wrapper">👋</div>
-    
+
     <h1>We're sorry to see you go</h1>
     <p>
-      The extension has been uninstalled from your browser. Thank you for using our extension! We'd love to know how we can improve.
+      The extension has been uninstalled from your browser. Thank you for using our extension! We'd love to know how we
+      can improve.
     </p>
 
-    <a id="feedback-link" href="https://runtimedev.vercel.app/feedback" target="_blank" rel="noopener noreferrer" class="feedback-btn">
+    <a id="feedback-link" href="https://runtimedev.vercel.app/feedback" target="_blank" rel="noopener noreferrer"
+      class="feedback-btn">
       <span>Share Your Feedback</span>
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
       </svg>
     </a>
 
@@ -158,24 +165,6 @@
       Your feedback helps us build better tools.
     </div>
   </div>
-
-  <script>
-    // Dynamically append installationId & extensionId parameters to the feedback URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const feedbackLink = document.getElementById('feedback-link');
-    
-    const baseUrl = 'https://runtimedev.vercel.app/feedback';
-    const params = new URLSearchParams();
-
-    if (urlParams.has('installationId')) {
-      params.set('installationId', urlParams.get('installationId'));
-    }
-    if (urlParams.has('extensionId')) {
-      params.set('extensionId', urlParams.get('extensionId'));
-    }
-
-    const finalUrl = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
-    feedbackLink.href = finalUrl;
-  </script>
 </body>
+
 </html>
